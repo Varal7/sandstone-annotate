@@ -16,6 +16,7 @@
         <strong>Score: <span id="dispCorrect">NA</span>/<span id="dispTotal">NA</span></strong> <span>(<a href="#" id="clearScore">Clear score</a>)</span>
         {% if last != "NA" %} <span id="lastChoice">Last choice: {{ last}} </span> {% endif %}
         <div class="btn-container text-center float-right">
+          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#instructionsModal">Instructions</button>
         {% for mol_dict in mols %}
           {% set correct = mols[test_index]['shortname'] == mol_dict['shortname'] %}
           <button type="button" class="btn btn-secondary  checkAnswerBtn" data-smile="{{ mol_dict['smile']}}" data-correct="{{ correct }}" id="answerBtn-{{ mol_dict['shortname']}}">
@@ -56,7 +57,29 @@
   </section>
 
 
-  <div id="imgModal" class="modal modla-xl" tabindex="-1" role="dialog">
+  <div id="instructionsModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You are given images from cells after exposure to a certain molecule.
+        For each molecule you are given three reference images (one per row): 
+        each column corresponds to one channel.
+        In the upper part of the interface, the first row is the molecule to identify. Submit your answer by pression the buttons in the top right or by using keyboard shortcuts: A (or 1) for the first molecule, B (or 2) for the second molecule.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="imgModal" class="modal modal-xl" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -73,7 +96,10 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
+  <footer>
+    <div class="container">Version 0.2</div>
+  </footer>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

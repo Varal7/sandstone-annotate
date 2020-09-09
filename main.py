@@ -4,6 +4,7 @@ import flask
 import numpy as np
 import os
 import json
+from collections import defaultdict
 import random
 import io
 from string import ascii_uppercase
@@ -24,7 +25,16 @@ def get_random_smile():
     return random.choices(list(metadata.keys()))[0]
 
 def get_random_image_basenames(smile, k=3):
-    return [os.path.basename(x['path']) for  x in random.choices(metadata[smile]['images'], k=k)]
+    images = metadata[smile]['images']
+    plate2images = defaultdict(list)
+    for x in images:
+        plate2images[x['plate_id']].append(os.path.basename(x['path']))
+
+    plates = plate2images.keys()
+    k = min(k, len(plates))
+    chosen_plates = np.random.choice(list(plates), size=k, replace=False)
+
+    return [np.random.choice(plate2images[p], size=1)[0] for p in chosen_plates]
 
 @app.route('/')
 def main():
