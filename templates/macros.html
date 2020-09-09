@@ -1,0 +1,18 @@
+{% macro show_images(image_basenames, max_dim, show_name=True) %}
+  {% for image_basename in image_basenames %}
+    <div class="row">
+      <div class="col-1">
+        <p>{% if show_name %} {{ image_basename }} {% endif %} </p>
+      </div>
+      <div class="col-11">
+        <div class="row img-row">
+        {% for dim in range(max_dim) %}
+          <div class="img-container">
+            <a href="#" class="thumbnail img-fluid"><img data-toggle="modal" data-target="#imgModal" class="thumb" src="{{ url_for('image', basename=image_basename, dim=dim) }}" /></a>
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endmacro %}

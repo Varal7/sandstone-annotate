@@ -1,0 +1,41 @@
+.static {
+  position: fixed;
+  top: 0; 
+  width: 100%; 
+  z-index: 1;
+  background-color: #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.thumb {
+  border: 1px solid #ddd; 
+  border-radius: 4px;  
+  max-width: 100%; 
+}
+
+.img-row {
+  flex-wrap: nowrap;
+  overflow-x: auto
+}
+
+.img-container {
+  display: inline-block;
+  float: none;
+}
+
+@media (min-width: 1000px) {
+    .container{
+        max-width: 80%;
+    }
+}
+
+.container {
+  margin-bottom: 50px;
+  max-width: 100%;
+}
+
+.btn-container {
+  display: inline-block;
+}
+

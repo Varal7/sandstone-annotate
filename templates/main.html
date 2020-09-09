@@ -1,0 +1,187 @@
+{% from "macros.html" import show_images %}
+
+<!doctype html>
+<htlm>
+<head>
+  <title>Sandstone - Annotate</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="static" id="static-header">
+
+    <div class="card">
+      <div class="card-header">
+        <strong>Score: <span id="dispCorrect">NA</span>/<span id="dispTotal">NA</span></strong> <span>(<a href="#" id="clearScore">Clear score</a>)</span>
+        {% if last != "NA" %} <span id="lastChoice">Last choice: {{ last}} </span> {% endif %}
+        <div class="btn-container text-center float-right">
+        {% for mol_dict in mols %}
+          {% set correct = mols[test_index]['shortname'] == mol_dict['shortname'] %}
+          <button type="button" class="btn btn-secondary  checkAnswerBtn" data-smile="{{ mol_dict['smile']}}" data-correct="{{ correct }}" id="answerBtn-{{ mol_dict['shortname']}}">
+            Molecule {{mol_dict['shortname']}}
+          </button>
+        {% endfor %}
+        </div>
+      </div>
+      <div class="card-body">
+      {% set image_basenames = [mols[test_index]['test_image']] %}
+      {{ show_images(image_basenames, num_channels, False) }}
+      </div>
+    </div>
+
+  </div>
+
+  <section id="content" class="container">
+
+
+    <div class="train">
+
+      <h2>References</h2>
+
+      {% for mol_dict in mols %}
+        {% set image_basenames = mol_dict['image_basenames'] %}
+        <div class="card">
+          <div class="card-header">
+            <strong>Molecule {{mol_dict['shortname']}}: {{ mol_dict['smile'] }}</strong>
+          </div>
+          <div class="card-body">
+            {{ show_images(image_basenames, num_channels) }}
+          </div>
+        </div>
+        <br />
+      {% endfor %}
+
+    </div>
+  </section>
+
+
+  <div id="imgModal" class="modal modla-xl" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Full view</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImg" class="img" src="https://www.publicdomainpictures.net/pictures/280000/velka/not-found-image-15383864787lu.jpg"></img>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+<script>
+
+let correct;
+let total;
+
+
+const $dispCorrect = $("#dispCorrect");
+const $dispTotal = $("#dispTotal");
+
+const readSession = () => {
+  correct = parseInt(sessionStorage.getItem("correct") || 0);
+  total = parseInt(sessionStorage.getItem("total") || 0);
+  $dispCorrect.html(correct);
+  $dispTotal.html(total);
+}
+
+const saveSession = () => {
+  sessionStorage.setItem("correct", correct);
+  sessionStorage.setItem("total", total);
+}
+
+$('#clearScore').click(function() {
+  correct = 0;
+  total = 0;
+  $('#lastChoice').html("")
+  saveSession();
+  readSession();
+})
+
+$('.thumb').each(function () {
+  const  $this = $(this);
+  $this.on("click", function () {
+    $("#modalImg").attr('src', $this.attr("src"));
+  })
+})
+
+$('.checkAnswerBtn').each(function () {
+    const  $this = $(this);
+    $this.on("click", function () {
+      let msg = "";
+      let last;
+      if ($this.data("correct") === "True") {
+        msg += "Correct!\n";
+        last = "Correct";
+        correct += 1;
+      } else {
+        msg += "Incorrect!\n";
+        last = "Incorrect";
+      }
+      total += 1;
+      msg += `You picked ${$this.data('smile')}`;
+      saveSession();
+      readSession();
+      //alert(msg);
+      window.location.href = "/?last=" + last;
+    });
+});
+
+const adjust = () => {
+  const height = document.getElementById("static-header").offsetHeight;
+  document.getElementById("content").style.marginTop = height + 'px';
+}
+
+function topFunction() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+
+window.onresize = function () {
+  adjust();
+}
+
+document.onreadystatechange = function () {
+  adjust();
+  topFunction();
+  readSession();
+
+}
+
+document.onkeydown = function(e) {
+    switch(e.which) {
+        case 49: // 1
+        $("#answerBtn-A").click();
+        break;
+
+        case 65: // a
+        $("#answerBtn-A").click();
+        break;
+
+        case 50: // 2
+        $("#answerBtn-B").click();
+        break;
+
+        case 66: // b
+        $("#answerBtn-B").click();
+        break;
+
+
+        default: return;
+    }
+    e.preventDefault(); // prevent the default action
+  };
+
+</script>
+</html>
