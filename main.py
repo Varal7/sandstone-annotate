@@ -31,8 +31,7 @@ def get_random_image_basenames(smile, k=3):
         plate2images[x['plate_id']].append(os.path.basename(x['path']))
 
     plates = plate2images.keys()
-    k = min(k, len(plates))
-    chosen_plates = np.random.choice(list(plates), size=k, replace=False)
+    chosen_plates = np.random.choice(list(plates), size=min(k, len(plates)), replace=False)
 
     return [np.random.choice(plate2images[p], size=1)[0] for p in chosen_plates]
 
@@ -58,9 +57,10 @@ def main():
 @app.route('/random')
 def debug():
     smile = get_random_smile()
-    image_basenames = get_random_image_basenames(smile)
+    image_basenames = get_random_image_basenames(smile, 4)
     text =  'Random molecule: {}\n'.format(smile)
     text +=  'basenames: {}'.format(image_basenames)
+    text +=  'len: {}'.format(len(image_basenames))
     return text
 
 @app.route('/image/<basename>/<int:dim>')

@@ -47,7 +47,7 @@
             <strong>Molecule {{mol_dict['shortname']}}: {{ mol_dict['smile'] }}</strong>
           </div>
           <div class="card-body">
-            {{ show_images(image_basenames, num_channels) }}
+            {{ show_images(image_basenames, num_channels, True) }}
           </div>
         </div>
         <br />
@@ -70,7 +70,7 @@
         <p>You are given images from cells after exposure to a certain molecule.
         For each molecule you are given three reference images (one per row): 
         each column corresponds to one channel.
-        In the upper part of the interface, the first row is the molecule to identify. Submit your answer by pression the buttons in the top right or by using keyboard shortcuts: A (or 1) for the first molecule, B (or 2) for the second molecule.</p>
+        In the upper part of the interface, the first row is the molecule to identify. Submit your answer by pressing the buttons in the top right or by using keyboard shortcuts: A (or 1) for the first molecule, B (or 2) for the second molecule.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
